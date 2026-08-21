@@ -58,10 +58,8 @@ Add your deployed Streamlit URL here:
 
 ```text
 https://astrovision-yolov8-cbam.streamlit.app/
+
 ```
-
-> If you have not deployed the application yet, remove this section until a live URL is available.
-
 ---
 
 # 📂 Project Structure
@@ -100,8 +98,6 @@ dataset/
         ├── val/
         └── test/
 ```
-
-The dataset itself is **not included in this repository**.
 
 ---
 
@@ -245,7 +241,8 @@ Users can interactively control:
 ### Image 2
 
 ![AstroVision Image 2](./Images/image2.png)
-```
+
+---
 
 
 ### 🤖 Multiple Model Backends
