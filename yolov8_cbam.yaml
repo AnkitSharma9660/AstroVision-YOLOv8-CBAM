@@ -1,0 +1,77 @@
+# Ultralytics YOLOv8 + FULL CBAM 
+
+nc: 4  # number of classes: comet, galaxy, nebula, globular cluster
+
+scales:
+  # [depth multiplier, width multiplier, max channels]
+  n: [0.33, 0.25, 1024]  # nano model → fastest, least accurate
+  s: [0.33, 0.50, 1024]  # small model
+  m: [0.67, 0.75, 768]   # medium model
+  l: [1.00, 1.00, 512]   # large model
+  x: [1.00, 1.25, 512]   # extra large → slowest, most accurate
+
+backbone:
+# [from, repeats, module, args]
+
+  - [-1, 1, Conv, [64, 3, 2]]   # takes input image → applies convolution with 64 filters, kernel 3x3, stride 2 halves image size (640→320)
+
+  - [-1, 1, Conv, [128, 3, 2]]  # increases channels to 128 and downsamples again → extracts more complex patterns
+
+  - [-1, 3, C2f, [128, True]]   # C2f block repeated 3 times → efficient feature extraction with shortcut connections
+
+  - [-1, 1, Conv, [256, 3, 2]]  # increases channels to 256 and downsamples → deeper features
+
+  - [-1, 6, C2f, [256, True]]   # deeper feature learning, repeated 6 times
+
+  - [-1, 1, Conv, [512, 3, 2]]  # increases channels to 512 → captures higher-level patterns
+
+  - [-1, 6, C2f, [512, True]]   # strong feature extraction for complex structures like galaxies
+
+  - [-1, 1, Conv, [1024, 3, 2]] # deepest layer, very high-level features
+
+  - [-1, 3, C2f, [1024, True]]  # rich semantic understanding (WHAT objects are)
+
+  - [-1, 1, SPPF, [1024, 5]]    # Spatial Pyramid Pooling Fast → captures multi-scale context using different receptive fields
+
+  - [-1, 1, CBAM, [1024]]       # CBAM attention module → calls our CBAM code
+                                # step 1: Channel Attention → selects important feature channels
+                                # step 2: Spatial Attention → selects important locations
+                                # output: refined feature map with noise suppressed and important regions highlighted
+                                # this directly implements: F → CAM → F′ → SAM → F′′
+
+head:
+
+  - [-1, 1, nn.Upsample, [None, 2, "nearest"]]   # upsamples feature map (e.g., 20×20 → 40×40) using nearest neighbor (fast method)
+
+  - [[-1, 6], 1, Concat, [1]]  # concatenates upsampled features with layer 6 (from backbone) → combines deep (semantic) + shallow (spatial) info
+
+  - [-1, 3, C2f, [512]]        # refines combined features → part of FPN/PAN fusion
+
+  - [-1, 1, nn.Upsample, [None, 2, "nearest"]]   # further upsampling (40×40 → 80×80)
+
+  - [[-1, 4], 1, Concat, [1]]  # fuse with earlier layer (more detailed spatial info)
+
+  - [-1, 3, C2f, [256]]        # refined features for small object detection → this becomes P3
+
+  - [-1, 1, Conv, [256, 3, 2]] # downsample again (80×80 → 40×40)
+
+  - [[-1, 13], 1, Concat, [1]] # combine with intermediate features → PAN bottom-up path
+
+  - [-1, 3, C2f, [512]]        # refined medium-scale features → this becomes P4
+
+  - [-1, 1, Conv, [512, 3, 2]] # downsample again (40×40 → 20×20)
+
+  - [[-1, 10], 1, Concat, [1]] # combine with CBAM-refined backbone output → strongest semantic + attention features
+
+  - [-1, 3, C2f, [1024]]       # refined large-scale features → this becomes P5
+
+  - [[16, 19, 22], 1, Detect, [nc]]  
+    # Detect layer takes three feature maps:
+    # 16 → P3 (80×80) → detects small objects (stars, small comets)
+    # 19 → P4 (40×40) → detects medium objects
+    # 22 → P5 (20×20) → detects large objects (galaxies, nebulae)
+    # For each grid cell, it predicts:
+    # - bounding box (x, y, width, height)
+    # - class probabilities (4 classes)
+    # - confidence score
+    # This is the final YOLO head output before NMS

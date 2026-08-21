@@ -1,0 +1,13 @@
+# Cosmica Dataset — used for training only, not needed for Streamlit deployment
+path: dataset/cosmica
+
+train: images/train
+val:   images/val
+test:  images/test
+
+nc: 4
+names:
+  0: comet
+  1: galaxy
+  2: globular_cluster
+  3: nebula
