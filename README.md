@@ -57,7 +57,7 @@ The project includes:
 Add your deployed Streamlit URL here:
 
 ```text
-https://your-astrovision-app.streamlit.app/
+https://astrovision-yolov8-cbam.streamlit.app/
 ```
 
 > If you have not deployed the application yet, remove this section until a live URL is available.
@@ -238,20 +238,15 @@ Users can interactively control:
 
 ### 🖼️ Image Upload
 
-Supported image formats include:
+### Image 1
 
-```text
-JPG
-JPEG
-PNG
-WEBP
-TIF
-TIFF
+![AstroVision Image 1](./Images/image1.png)
+
+### Image 2
+
+![AstroVision Image 2](./Images/image2.png)
 ```
 
-### ✨ Sample Image
-
-AstroVision also includes a synthetic cosmic field generator that can be used to test the application without uploading an image.
 
 ### 🤖 Multiple Model Backends
 
