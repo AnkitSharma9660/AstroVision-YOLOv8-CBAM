@@ -2,26 +2,17 @@
 
 
 ![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python&logoColor=white)
-
 ![YOLOv8](https://img.shields.io/badge/YOLOv8-Ultralytics-FF6F00)
-
 ![CBAM](https://img.shields.io/badge/CBAM-Attention%20Module-purple)
-
 ![PyTorch](https://img.shields.io/badge/PyTorch-Deep%20Learning-ee4c2c?logo=pytorch&logoColor=white)
-
 ![Streamlit](https://img.shields.io/badge/Streamlit-Web%20App-FF4B4B?logo=streamlit&logoColor=white)
-
 ![ONNX](https://img.shields.io/badge/ONNX-Model%20Inference-005CED)
-
 ![Git](https://img.shields.io/badge/Git-Version%20Control-F05032?logo=git)
-
 ![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?logo=github)
-
 ![License](https://img.shields.io/badge/License-MIT-brightgreen)
-
 ![Status](https://img.shields.io/badge/Project-Completed-success)
 
-\
+
 
 An end-to-end Deep Learning project for detecting and classifying astronomical objects in deep-space images using **YOLOv8 enhanced with CBAM (Convolutional Block Attention Module)**.
 
